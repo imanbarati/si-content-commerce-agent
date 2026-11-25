@@ -1,4 +1,5 @@
 import { configFrom } from './config.mjs'
+import { cleanInvisible } from './privacy.mjs'
 import {
   choosePrice, extractPrices, factCheck, faDigits, merchantTokenValid,
   parseFeed, planQueries, rankResults, stripHtml,
@@ -168,6 +169,11 @@ export function createHandler(store, env = {}) {
       })
     }
     if (path === '/api/posts') return json(store.get('posts') || [])
+    if (path === '/api/privacy/clean' && method === 'POST') {
+      let body
+      try { body = await request.json() } catch { return fail('Invalid JSON', 400) }
+      return json({ ok: true, text: cleanInvisible(body.text) })
+    }
     if (path === '/api/config') {
       return json({ feeds: cfg.feeds.length, products: cfg.products.length, researchProvider: cfg.researchProvider, merchantMode: cfg.merchantMode })
     }

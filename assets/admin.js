@@ -47,3 +47,21 @@
       researchButton.disabled = false;
     }
   });
+
+  document.getElementById('pca-clean-post')?.addEventListener('click', async () => {
+    const id = (document.getElementById('pca-clean-post-id')?.value || '').trim();
+    const out = document.getElementById('pca-sync-status');
+    if (!id || !out) return;
+    out.textContent = 'Cleaning…';
+    try {
+      const response = await fetch('/wp-json/posmana-agent/v1/privacy/clean', {
+        method: 'POST',
+        headers: { 'X-WP-Nonce': window.pcaNonce || '', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ post_id: Number(id) }),
+      });
+      const data = await response.json();
+      out.textContent = response.ok ? 'Cleaned post ' + data.post_id : 'Failed: HTTP ' + response.status;
+    } catch (error) {
+      out.textContent = 'Failed: ' + error.message;
+    }
+  });

@@ -4,6 +4,7 @@ import {
   choosePrice, extractPrices, factCheck, faDigits, merchantTokenValid,
   parseFeed, planQueries, rankResults, seoChecklist, stripHtml,
 } from '../src/core.mjs'
+import { cleanInvisible } from '../src/privacy.mjs'
 
 const FEED = `<?xml version="1.0"?><rss><channel>
 <item><title>Test &amp; Item</title><link>https://example.com/1</link><guid>abc-1</guid><description><![CDATA[<p>Hello</p>]]></description></item>
@@ -38,4 +39,11 @@ test('merchant token check', () => {
 test('SEO checklist is compliance oriented', () => {
   const list = seoChecklist({ drafts: true, canonicalLinks: true, dryRun: true, sourcesCited: true })
   assert.ok(list.every((item) => item.ok))
+})
+
+test('hidden character hygiene removes zero-width and bidi controls', () => {
+  assert.equal(cleanInvisible('A\u200B\u202EB'), 'AB')
+})
+test('exotic spaces normalize', () => {
+  assert.equal(cleanInvisible('a\u00A0\u00A0b'), 'a b')
 })

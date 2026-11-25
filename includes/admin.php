@@ -182,6 +182,8 @@ function pca_admin_page() {
 			<button class="button pca-sync" data-action="prices">Sync prices now</button>
 			<input type="text" id="pca-research-sku" placeholder="product SKU" size="18">
 			<button class="button" type="button" id="pca-research">Research merchant</button>
+			<input type="number" id="pca-clean-post-id" placeholder="post ID" size="8">
+			<button class="button" type="button" id="pca-clean-post">Clean hidden characters</button>
 			<span id="pca-sync-status" aria-live="polite"></span>
 		</p>
 
