@@ -37,3 +37,30 @@ document.getElementById('save').addEventListener('click', async () => {
 })
 
 load()
+
+document.getElementById('export').addEventListener('click', async () => {
+  const settings = await getSettings()
+  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' })
+  const link = document.createElement('a')
+  link.href = URL.createObjectURL(blob)
+  link.download = 'si-agent-settings.json'
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000)
+})
+
+document.getElementById('import').addEventListener('click', () => document.getElementById('import-file').click())
+document.getElementById('import-file').addEventListener('change', async (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+  try {
+    const incoming = JSON.parse(await file.text())
+    const settings = await getSettings()
+    await saveSettings({ ...settings, ...incoming })
+    await load()
+    const button = document.getElementById('save')
+    button.textContent = 'Imported ✓'
+    setTimeout(() => { button.textContent = 'Save settings' }, 1500)
+  } catch (error) {
+    alert('Import failed: ' + error.message)
+  }
+})

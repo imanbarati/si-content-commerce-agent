@@ -41,3 +41,32 @@ document.getElementById('clean').addEventListener('click', () => {
 document.getElementById('options').addEventListener('click', () => chrome.runtime.openOptionsPage())
 
 refresh()
+
+document.getElementById('audit-tab').addEventListener('click', async () => {
+  status.textContent = 'Auditing this tab…'
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true })
+    if (!tab) throw new Error('No active tab')
+    const [{ result }] = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      func: () => ({
+        url: location.href,
+        title: document.title,
+        description: document.querySelector('meta[name="description"]')?.content || '',
+        canonical: document.querySelector('link[rel="canonical"]')?.href || '',
+        h1: document.querySelector('h1')?.innerText || '',
+        jsonLd: document.querySelectorAll('script[type="application/ld+json"]').length,
+      }),
+    })
+    show(result)
+    status.textContent = 'Tab audit complete'
+  } catch (error) {
+    status.textContent = 'Audit failed: ' + error.message
+    show(error.message)
+  }
+})
+
+document.getElementById('analyze-ads').addEventListener('click', () => {
+  const csv = document.getElementById('text').value
+  send({ type: 'analyzeAds', csv })
+})

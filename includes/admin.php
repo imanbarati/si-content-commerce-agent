@@ -172,6 +172,11 @@ function pca_admin_page() {
 			<p><label>Outbound URL <input type="url" name="merchant_to_url" class="regular-text" value="<?php echo esc_attr( $settings['merchant_to_url'] ); ?>"></label>
 			<label>Shared token <input type="password" name="merchant_token" class="regular-text" autocomplete="off" placeholder="<?php echo $settings['merchant_token'] ? 'configured' : 'not configured'; ?>"></label></p>
 
+			<p class="submit">
+				<button type="button" class="button" id="pca-run-checklist">Run checklist</button>
+				<button type="button" class="button" id="pca-run-audit">Run owned-domain audit</button>
+				<span id="pca-quick-status" aria-live="polite"></span>
+			</p>
 			<h2>Growth, schema and affiliate</h2>
 			<p><label><input type="checkbox" name="schema_enabled" value="1" <?php checked( $settings['schema_enabled'] ); ?>> Output Product/Article JSON-LD alongside Yoast SEO</label></p>
 			<p><label>Affiliate tags (platform|tag, one per line: shopify, woocommerce, aliexpress, cj, spocket, zendrop, printify)<br><textarea name="affiliate_tags" rows="3" class="large-text code"><?php echo esc_textarea( pca_tags_to_text( $settings['affiliate_tags'] ) ); ?></textarea></label></p>

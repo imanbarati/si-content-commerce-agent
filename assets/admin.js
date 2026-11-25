@@ -83,3 +83,24 @@
       out.textContent = 'Failed: ' + error.message
     }
   })
+
+  const quickStatus = document.getElementById('pca-quick-status')
+  const quickFetch = async (path, options = {}) => {
+    if (!quickStatus) return null
+    quickStatus.textContent = 'Running…'
+    try {
+      const response = await fetch('/wp-json/' + path, {
+        ...options,
+        headers: { 'X-WP-Nonce': window.pcaNonce || '', 'Content-Type': 'application/json' },
+      })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.message || 'Request failed')
+      quickStatus.textContent = 'Done — see result below'
+      return data
+    } catch (error) {
+      quickStatus.textContent = 'Failed: ' + error.message
+      return null
+    }
+  }
+  document.getElementById('pca-run-checklist')?.addEventListener('click', () => quickFetch('posmana-agent/v1/growth/campaign'))
+  document.getElementById('pca-run-audit')?.addEventListener('click', () => quickFetch('posmana-agent/v1/legal/audit', { method: 'POST' }))

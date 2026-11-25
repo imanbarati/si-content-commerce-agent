@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   choosePrice, cleanInvisible, extractPrices, factCheck, faDigits, mcpPayloadText,
-  affiliateLink, auditHtml, campaignChecklist, keywordVariants, merchantTokenValid, parseFeed, parseProducts, planQueries, rankResults, robotsAllows, seoChecklist,
+  affiliateLink, analyzeCampaign, auditHtml, campaignChecklist, keywordVariants, merchantTokenValid, parseCsv, parseFeed, parseProducts, planQueries, rankResults, robotsAllows, seoChecklist,
 } from '../core.js'
 
 const FEED = `<?xml version="1.0"?><rss><channel>
@@ -48,4 +48,10 @@ test('growth helpers', () => {
 test('legal audit helpers', () => {
   assert.equal(robotsAllows('User-agent: *\nDisallow: /private', 'https://x.example/private/a'), false)
   assert.ok(auditHtml('<title>Long enough title</title><h1>Hi</h1>', 'https://x.example/').checks.some((i) => i.ok))
+})
+
+test('offline campaign analysis', () => {
+  const rows = parseCsv('campaign,impressions,clicks,cost,conversions\nA,1000,5,50,0')
+  assert.equal(rows.length, 1)
+  assert.equal(analyzeCampaign(rows).campaigns[0].ctr, 0.5)
 })

@@ -6,7 +6,7 @@
   "background": { "service_worker": "background.js", "type": "module" },
   "action": { "default_popup": "popup.html", "default_title": "SI Content & Commerce Agent" },
   "options_page": "options.html",
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "activeTab", "scripting"],
   "optional_host_permissions": ["<all_urls>"],
   "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'self'" }
 }

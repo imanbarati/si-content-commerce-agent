@@ -32,7 +32,12 @@
   </select></label>
   <label>Outbound URL<input id="merchantToUrl" type="url"></label>
   <label>Shared token<input id="merchantToken" type="password" placeholder="stored locally"></label>
-  <button id="save" type="button">Save settings</button>
+  <div class="row">
+    <button id="save" type="button">Save settings</button>
+    <button id="export" type="button">Export JSON</button>
+    <button id="import" type="button">Import JSON</button>
+    <input id="import-file" type="file" accept="application/json" hidden>
+  </div>
   <p class="note">Compliance: no Google SERP scraping, CAPTCHA bypass or watermark removal. See the project docs.</p>
 </body>
 </html>

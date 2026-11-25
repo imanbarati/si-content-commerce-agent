@@ -2,6 +2,8 @@ import { configFrom } from './config.mjs'
 import { cleanInvisible } from './privacy.mjs'
 import { affiliateLink, campaignChecklist, keywordVariants } from './growth.mjs'
 import { legalAudit } from './legal.mjs'
+import { analyzeCampaign, parseCsv } from './ads.mjs'
+import { cyclePlan, recordCycle } from './autonomy.mjs'
 import {
   choosePrice, extractPrices, factCheck, faDigits, merchantTokenValid,
   parseFeed, planQueries, rankResults, stripHtml,
@@ -189,6 +191,24 @@ export function createHandler(store, env = {}) {
       return json({ ok: true, results: await legalAudit({ domains }) })
     }
 
+    if (path === '/api/ads/analyze' && method === 'POST') {
+      let body
+      try { body = await request.json() } catch { return fail('Invalid JSON', 400) }
+      const rows = Array.isArray(body.rows) ? body.rows : parseCsv(body.csv)
+      if (!rows.length) return fail('Provide CSV text or rows', 400)
+      return json({ ok: true, ...analyzeCampaign(rows) })
+    }
+    if (path === '/api/autonomy/status') return json({ ...cyclePlan(env), last: (store.get('autonomy') || [])[0] || null })
+    if (path === '/api/autonomy/run' && method === 'POST') {
+      const plan = cyclePlan(env)
+      if (!plan.enabled) return fail('Set AUTONOMY=on to enable read-only cycles', 403)
+      const feeds = await syncFeeds()
+      const prices = await syncPrices()
+      const domains = String(env.OWNED_DOMAINS || '').split(/[\n,]/).map((item) => item.trim()).filter(Boolean)
+      const audit = domains.length ? await legalAudit({ domains }) : []
+      const entry = recordCycle(store, { feeds: feeds.created, priceSuggestions: Object.keys(prices.suggestions || {}).length, audited: audit.length })
+      return json({ ok: true, ...entry })
+    }
     if (path === '/api/privacy/clean' && method === 'POST') {
       let body
       try { body = await request.json() } catch { return fail('Invalid JSON', 400) }

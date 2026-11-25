@@ -3,6 +3,7 @@ import {
   getSettings, mcpPayloadText, parseFeed, planQueries, rankResults, saveData,
   stripHtml,
 } from './core.js'
+import { analyzeCampaign, parseCsv } from './core.js'
 
 async function fetchText(url, options = {}) {
   const allowed = await ensureHost(url)
@@ -164,6 +165,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       case 'research': result = await research(message.sku, settings, data); break
       case 'syncPrices': result = { suggestions: await syncPrices(settings, data) }; break
       case 'cleanText': result = { text: cleanInvisible(message.text) }; break
+      case 'analyzeAds': {
+        const rows = parseCsv(message.csv)
+        if (!rows.length) throw new Error('Paste a CSV with a header row')
+        result = { ...analyzeCampaign(rows) }
+        break
+      }
       default: result = { error: 'Unknown action' }
     }
     await saveData(data)

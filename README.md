@@ -126,3 +126,14 @@ own, `robots.txt` respected, sequential rate-limited requests, no writes, no
 fake traffic and no ad manipulation. Worker endpoint:
 `POST /api/legal/audit` with `OWNED_DOMAINS` configured. WordPress endpoint:
 `POST /wp-json/posmana-agent/v1/legal/audit` with owned domains in settings.
+
+## Ease of use
+
+`QUICKSTART.md` gives copy-paste setup for all three editions. The extension has
+settings export/import and tab auditing; the Worker has `npm run computer` and
+`AUTONOMY=on` for bounded read-only cycles; WordPress has one-click checklist
+and audit buttons.
+
+Ad campaign analysis is offline: paste a Google Ads CSV export and get CTR,
+CPC, CPA and conversion-rate recommendations. No account connection is needed
+and nothing is changed in any ad platform.

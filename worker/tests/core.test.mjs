@@ -7,6 +7,8 @@ import {
 import { cleanInvisible } from '../src/privacy.mjs'
 import { affiliateLink, campaignChecklist, keywordVariants, schemaProduct } from '../src/growth.mjs'
 import { auditHtml, robotsAllows } from '../src/legal.mjs'
+import { analyzeCampaign, parseCsv } from '../src/ads.mjs'
+import { allowedOrigin, expressionFor } from '../src/computer.mjs'
 
 const FEED = `<?xml version="1.0"?><rss><channel>
 <item><title>Test &amp; Item</title><link>https://example.com/1</link><guid>abc-1</guid><description><![CDATA[<p>Hello</p>]]></description></item>
@@ -73,4 +75,17 @@ test('robots.txt compliance', () => {
 test('SEO audit checks', () => {
   const html = '<html><head><title>A good title</title><meta name="description" content="This is a long enough description"><link rel="canonical" href="https://x.example/"><script type="application/ld+json">{}</script></head><body><h1>Hello</h1></body></html>'
   assert.ok(auditHtml(html, 'https://x.example/').checks.every((item) => item.ok))
+})
+
+test('campaign CSV analysis', () => {
+  const rows = parseCsv('campaign,impressions,clicks,cost,conversions\nA,1000,5,50,0')
+  assert.equal(rows.length, 1)
+  const report = analyzeCampaign(rows)
+  assert.equal(report.campaigns[0].ctr, 0.5)
+  assert.ok(report.recommendations.some((text) => text.includes('low CTR')))
+})
+test('computer use allowlist', () => {
+  assert.equal(allowedOrigin('https://mine.example/a', ['https://mine.example']), true)
+  assert.equal(allowedOrigin('https://other.example/a', ['https://mine.example']), false)
+  assert.ok(expressionFor('audit').includes('jsonLd'))
 })
