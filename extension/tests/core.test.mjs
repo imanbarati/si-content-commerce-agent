@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   choosePrice, cleanInvisible, extractPrices, factCheck, faDigits, mcpPayloadText,
-  merchantTokenValid, parseFeed, parseProducts, planQueries, rankResults, seoChecklist,
+  affiliateLink, campaignChecklist, keywordVariants, merchantTokenValid, parseFeed, parseProducts, planQueries, rankResults, seoChecklist,
 } from '../core.js'
 
 const FEED = `<?xml version="1.0"?><rss><channel>
@@ -37,4 +37,10 @@ test('MCP payload and products', () => {
 test('token and checklist', () => {
   assert.equal(merchantTokenValid('a', 'a'), true)
   assert.ok(seoChecklist({ drafts: true, canonicalLinks: true, dryRun: true, sourcesCited: true }).every((i) => i.ok))
+})
+
+test('growth helpers', () => {
+  assert.equal(keywordVariants('mini').length, 8)
+  assert.ok(affiliateLink('shopify', 'https://x.example/p', 't').includes('utm_medium=affiliate'))
+  assert.ok(campaignChecklist().some((i) => i.label.includes('No bot swarms')))
 })

@@ -65,3 +65,21 @@
       out.textContent = 'Failed: ' + error.message;
     }
   });
+
+  document.getElementById('pca-keywords')?.addEventListener('click', async () => {
+    const seed = (document.getElementById('pca-keyword-seed')?.value || '').trim()
+    const out = document.getElementById('pca-sync-status')
+    if (!seed || !out) return
+    out.textContent = 'Building variants…'
+    try {
+      const response = await fetch('/wp-json/posmana-agent/v1/growth/keywords', {
+        method: 'POST',
+        headers: { 'X-WP-Nonce': window.pcaNonce || '', 'Content-Type': 'application/json' },
+        body: JSON.stringify({ seed }),
+      })
+      const data = await response.json()
+      out.textContent = (data.variants || []).join(' · ')
+    } catch (error) {
+      out.textContent = 'Failed: ' + error.message
+    }
+  })

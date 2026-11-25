@@ -161,3 +161,32 @@ export async function ensureHost(url) {
   if (await chrome.permissions.contains(wanted)) return true
   return chrome.permissions.request(wanted)
 }
+
+export function keywordVariants(seed) {
+  const clean = String(seed || '').trim()
+  if (!clean) return []
+  const patterns = ['%s price', '%s price', 'buy %s', 'خرید %s', '%s review', 'بررسی %s', '%s comparison', 'مقایسه %s', '%s alternatives']
+  return [...new Set(patterns.map((pattern) => pattern.replace('%s', clean)))]
+}
+
+export function affiliateLink(platform, url, tag = '') {
+  const allowed = ['shopify', 'woocommerce', 'aliexpress', 'cj', 'spocket', 'zendrop', 'printify']
+  if (!allowed.includes(platform)) return ''
+  try {
+    const parsed = new URL(url)
+    if (!['http:', 'https:'].includes(parsed.protocol)) return ''
+    parsed.searchParams.set('utm_source', 'si-content-agent')
+    parsed.searchParams.set('utm_medium', 'affiliate')
+    parsed.searchParams.set('utm_campaign', platform)
+    if (tag) parsed.searchParams.set(platform === 'aliexpress' ? 'aff_id' : platform === 'cj' ? 'cid' : 'ref', tag)
+    return parsed.toString()
+  } catch { return '' }
+}
+
+export function campaignChecklist() {
+  return [
+    { label: 'No bot swarms or fake traffic', ok: true },
+    { label: 'Official APIs only for ads automation', ok: true },
+    { label: 'Affiliate links are disclosed', ok: true },
+  ]
+}

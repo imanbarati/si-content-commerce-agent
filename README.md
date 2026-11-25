@@ -1,4 +1,4 @@
-# AI Content & Commerce Agent (white-label WordPress plugin)
+# SI Content & Commerce Agent (white-label WordPress plugin)
 
 A neutral-branded WordPress plugin that imports content, enriches it with AI,
 researches merchant prices with a BetterSearch-style pipeline, suggests prices,
@@ -21,7 +21,7 @@ in the UI — the brand name is filterable.
 - RSS feeds via WordPress SimplePie; deduplication through `_pca_guid`.
 - X.com posts via your own bearer token or an RSS bridge template.
 - Posts default to **draft** for review.
-- AI enrichment (optional): rewrite title, summary, focus keyphrase and category
+- SI enrichment (optional): rewrite title, summary, focus keyphrase and category
   using any OpenAI-compatible chat endpoint you configure.
 
 ### Merchant research (BetterSearch-inspired)
@@ -100,7 +100,7 @@ locally. Configure behaviour with environment variables documented in
 ## Install (WordPress edition)
 
 Upload the folder to `wp-content/plugins/` and activate. Optional: install
-Yoast SEO. Configure settings under **Tools → AI Content & Commerce Agent**.
+Yoast SEO. Configure settings under **Tools → SI Content & Commerce Agent**.
 
 ## Verification
 
@@ -109,3 +109,12 @@ the Worker edition passes 13 `node:test` tests and its HTTP API was smoke-tested
 with real requests; the mock MCP bridge returned the expected JSON-RPC payload. No live Google, X,
 Digikala or Torob requests were made during development. No credentials are in
 the repository.
+
+## Growth modules (all editions)
+
+- Keyword variant generation and research through compliant sources.
+- Product/Article JSON-LD schema alongside Yoast SEO.
+- Affiliate link builder for Shopify, WooCommerce, AliExpress, CJ, Spocket,
+  Zendrop and Printify with `sponsored nofollow` and UTM parameters.
+- Campaign conduct checklist. Bot swarms, fake traffic, click fraud and ad
+  manipulation are explicitly out of scope — see `docs/CAMPAIGN-CONDUCT.md`.

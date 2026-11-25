@@ -1,5 +1,6 @@
 import { configFrom } from './config.mjs'
 import { cleanInvisible } from './privacy.mjs'
+import { affiliateLink, campaignChecklist, keywordVariants } from './growth.mjs'
 import {
   choosePrice, extractPrices, factCheck, faDigits, merchantTokenValid,
   parseFeed, planQueries, rankResults, stripHtml,
@@ -169,6 +170,18 @@ export function createHandler(store, env = {}) {
       })
     }
     if (path === '/api/posts') return json(store.get('posts') || [])
+    if (path === '/api/growth/keywords' && method === 'POST') {
+      let body
+      try { body = await request.json() } catch { return fail('Invalid JSON', 400) }
+      return json({ ok: true, variants: keywordVariants(body.seed) })
+    }
+    if (path === '/api/growth/affiliate' && method === 'POST') {
+      let body
+      try { body = await request.json() } catch { return fail('Invalid JSON', 400) }
+      const link = affiliateLink(body.platform, body.url, body.tag)
+      return link ? json({ ok: true, url: link }) : fail('Invalid platform or URL', 400)
+    }
+    if (path === '/api/growth/campaign') return json({ ok: true, checklist: campaignChecklist() })
     if (path === '/api/privacy/clean' && method === 'POST') {
       let body
       try { body = await request.json() } catch { return fail('Invalid JSON', 400) }

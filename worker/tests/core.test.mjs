@@ -5,6 +5,7 @@ import {
   parseFeed, planQueries, rankResults, seoChecklist, stripHtml,
 } from '../src/core.mjs'
 import { cleanInvisible } from '../src/privacy.mjs'
+import { affiliateLink, campaignChecklist, keywordVariants, schemaProduct } from '../src/growth.mjs'
 
 const FEED = `<?xml version="1.0"?><rss><channel>
 <item><title>Test &amp; Item</title><link>https://example.com/1</link><guid>abc-1</guid><description><![CDATA[<p>Hello</p>]]></description></item>
@@ -46,4 +47,18 @@ test('hidden character hygiene removes zero-width and bidi controls', () => {
 })
 test('exotic spaces normalize', () => {
   assert.equal(cleanInvisible('a\u00A0\u00A0b'), 'a b')
+})
+
+test('keyword variants and schema', () => {
+  assert.equal(keywordVariants('posmana mini').length, 10)
+  assert.equal(schemaProduct({ name: 'Mini', sku: 'mini', price: 10 }).offers.price, 10)
+})
+test('affiliate links carry consent-friendly UTMs', () => {
+  const link = affiliateLink('shopify', 'https://shop.example/p/1', 'partner')
+  assert.ok(link.includes('utm_medium=affiliate'))
+  assert.ok(link.includes('ref=partner'))
+  assert.equal(affiliateLink('evil', 'https://shop.example'), '')
+})
+test('campaign checklist refuses swarm behaviour', () => {
+  assert.ok(campaignChecklist().some((item) => item.label.includes('No bot swarms')))
 })

@@ -33,6 +33,13 @@ function pca_handle_settings_save() {
 	$settings['undercut']         = absint( $post['undercut'] ?? 1000 );
 	$settings['min_margin']       = absint( $post['min_margin'] ?? 5 );
 	$settings['seo_enabled']      = ! empty( $post['seo_enabled'] );
+	$settings['schema_enabled']   = ! empty( $post['schema_enabled'] );
+	$tags = array();
+	foreach ( preg_split( '/\r?\n/', $post['affiliate_tags'] ?? '' ) as $line ) {
+		$parts = array_map( 'trim', explode( '|', $line ) );
+		if ( count( $parts ) === 2 && '' !== $parts[0] ) { $tags[ sanitize_key( $parts[0] ) ] = sanitize_text_field( $parts[1] ); }
+	}
+	$settings['affiliate_tags'] = $tags;
 	$settings['brand_name']       = sanitize_text_field( $post['brand_name'] ?? $settings['brand_name'] );
 	$settings['ai_enabled']       = ! empty( $post['ai_enabled'] );
 	$settings['ai_endpoint']      = esc_url_raw( $post['ai_endpoint'] ?? '' );
@@ -90,7 +97,7 @@ function pca_admin_page() {
 			<div class="pca-card"><b><?php echo esc_html( $status['yoast'] ); ?></b><span>Yoast SEO</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['feeds'] ); ?></b><span>RSS feeds</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['x'] ); ?></b><span>X handles</span></div>
-			<div class="pca-card"><b><?php echo esc_html( $status['ai'] ); ?></b><span>AI enrichment</span></div>
+			<div class="pca-card"><b><?php echo esc_html( $status['ai'] ); ?></b><span>SI enrichment</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['research'] ); ?></b><span>Research source</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['merchant'] ); ?></b><span>Merchant bridge</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['digikala'] ); ?></b><span>Digikala MCP</span></div>
@@ -137,7 +144,7 @@ function pca_admin_page() {
 			<p><label>Brand name shown to editors<br><input type="text" name="brand_name" class="regular-text" value="<?php echo esc_attr( $settings['brand_name'] ); ?>"></label></p>
 			<p><label><input type="checkbox" name="ai_enabled" value="1" <?php checked( $settings['ai_enabled'] ); ?>> AI-enrich imported posts</label></p>
 			<p><label>OpenAI-compatible chat endpoint<br><input type="url" name="ai_endpoint" class="regular-text" value="<?php echo esc_attr( $settings['ai_endpoint'] ); ?>" placeholder="https://provider.example/v1/chat/completions"></label></p>
-			<p><label>AI key (leave blank to keep existing)<br><input type="password" name="ai_key" class="regular-text" autocomplete="off" placeholder="<?php echo $settings['ai_key'] ? 'configured' : 'not configured'; ?>"></label></p>
+			<p><label>SI key (leave blank to keep existing)<br><input type="password" name="ai_key" class="regular-text" autocomplete="off" placeholder="<?php echo $settings['ai_key'] ? 'configured' : 'not configured'; ?>"></label></p>
 			<p><label>Model <input type="text" name="ai_model" value="<?php echo esc_attr( $settings['ai_model'] ); ?>"></label></p>
 
 			<h2>Research and merchant bridge</h2>
@@ -164,6 +171,10 @@ function pca_admin_page() {
 			<p><label>Outbound URL <input type="url" name="merchant_to_url" class="regular-text" value="<?php echo esc_attr( $settings['merchant_to_url'] ); ?>"></label>
 			<label>Shared token <input type="password" name="merchant_token" class="regular-text" autocomplete="off" placeholder="<?php echo $settings['merchant_token'] ? 'configured' : 'not configured'; ?>"></label></p>
 
+			<h2>Growth, schema and affiliate</h2>
+			<p><label><input type="checkbox" name="schema_enabled" value="1" <?php checked( $settings['schema_enabled'] ); ?>> Output Product/Article JSON-LD alongside Yoast SEO</label></p>
+			<p><label>Affiliate tags (platform|tag, one per line: shopify, woocommerce, aliexpress, cj, spocket, zendrop, printify)<br><textarea name="affiliate_tags" rows="3" class="large-text code"><?php echo esc_textarea( pca_tags_to_text( $settings['affiliate_tags'] ) ); ?></textarea></label></p>
+
 			<h2>SEO and schedule</h2>
 			<p><label><input type="checkbox" name="seo_enabled" value="1" <?php checked( $settings['seo_enabled'] ); ?>> Write Yoast meta fields on imported posts</label></p>
 			<p><label>Sync interval
@@ -182,6 +193,8 @@ function pca_admin_page() {
 			<button class="button pca-sync" data-action="prices">Sync prices now</button>
 			<input type="text" id="pca-research-sku" placeholder="product SKU" size="18">
 			<button class="button" type="button" id="pca-research">Research merchant</button>
+			<input type="text" id="pca-keyword-seed" placeholder="keyword seed" size="18">
+			<button class="button" type="button" id="pca-keywords">Keyword variants</button>
 			<input type="number" id="pca-clean-post-id" placeholder="post ID" size="8">
 			<button class="button" type="button" id="pca-clean-post">Clean hidden characters</button>
 			<span id="pca-sync-status" aria-live="polite"></span>
@@ -211,5 +224,11 @@ function pca_products_to_text( $products ) {
 	foreach ( (array) $products as $product ) {
 		$lines[] = sprintf( '%s|%s|%s|%s', $product['sku'] ?? '', $product['name'] ?? '', $product['query'] ?? '', $product['cost'] ?? '' );
 	}
+	return implode( "\n", $lines );
+}
+
+function pca_tags_to_text( $tags ) {
+	$lines = array();
+	foreach ( (array) $tags as $platform => $tag ) { $lines[] = sanitize_key( $platform ) . '|' . sanitize_text_field( $tag ); }
 	return implode( "\n", $lines );
 }

@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 function pca_ai_call( $system, $user, $max_tokens = 600 ) {
 	$settings = pca_settings();
 	if ( empty( $settings['ai_endpoint'] ) || empty( $settings['ai_key'] ) ) {
-		return new WP_Error( 'pca_ai_not_configured', 'AI endpoint or key not configured.' );
+		return new WP_Error( 'pca_ai_not_configured', 'SI endpoint or key not configured.' );
 	}
 	$response = wp_remote_post( esc_url_raw( $settings['ai_endpoint'] ), array(
 		'headers' => array(
@@ -29,9 +29,9 @@ function pca_ai_call( $system, $user, $max_tokens = 600 ) {
 	if ( is_wp_error( $response ) ) { return $response; }
 	$code = wp_remote_retrieve_response_code( $response );
 	$data = json_decode( wp_remote_retrieve_body( $response ), true );
-	if ( $code < 200 || $code >= 300 ) { return new WP_Error( 'pca_ai_http', 'AI endpoint returned HTTP ' . $code ); }
+	if ( $code < 200 || $code >= 300 ) { return new WP_Error( 'pca_ai_http', 'SI endpoint returned HTTP ' . $code ); }
 	$content = $data['choices'][0]['message']['content'] ?? '';
-	return is_string( $content ) ? trim( $content ) : new WP_Error( 'pca_ai_empty', 'Empty AI response.' );
+	return is_string( $content ) ? trim( $content ) : new WP_Error( 'pca_ai_empty', 'Empty SI response.' );
 }
 
 function pca_ai_parse_json( $text ) {
@@ -51,7 +51,7 @@ function pca_ai_enrich_post( $post_id, $title, $body ) {
 	$user   = wp_json_encode( array( 'title' => $title, 'body' => wp_strip_all_tags( $body ) ) );
 	$result = pca_ai_call( $system, $user, 500 );
 	if ( is_wp_error( $result ) ) {
-		pca_log( 'AI enrichment failed: ' . $result->get_error_message() );
+		pca_log( 'SI enrichment failed: ' . $result->get_error_message() );
 		return false;
 	}
 	$data = pca_ai_parse_json( $result );
@@ -66,6 +66,6 @@ function pca_ai_enrich_post( $post_id, $title, $body ) {
 	if ( ! empty( $data['focus'] ) ) {
 		pca_apply_seo( $post_id, sanitize_text_field( $data['focus'] ), sanitize_text_field( $data['summary'] ?? '' ) );
 	}
-	pca_log( 'AI enrichment applied to post ' . $post_id );
+	pca_log( 'SI enrichment applied to post ' . $post_id );
 	return true;
 }

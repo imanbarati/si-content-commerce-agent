@@ -46,7 +46,7 @@ Where AI assistance is material, disclose it and keep a human editor in the loop
 
 - Imports and research output are drafts by default.
 - Each imported post links back to its source.
-- AI enrichment writes metadata, and the editor reviews it.
+- SI enrichment writes metadata, and the editor reviews it.
 - The fact-check step requires a price to appear in a fetched source.
 - The SEO checklist in the admin page tracks these compliance signals.
 

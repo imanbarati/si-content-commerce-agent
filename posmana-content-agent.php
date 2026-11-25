@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: AI Content & Commerce Agent
- * Description: White-label content agent: RSS/X import, AI enrichment, merchant research, MCP price suggestions and Yoast SEO. All endpoints and credentials are configured by the site owner; nothing is bundled.
+ * Plugin Name: SI Content & Commerce Agent
+ * Description: White-label content agent: RSS/X import, SI enrichment, merchant research, MCP price suggestions and Yoast SEO. All endpoints and credentials are configured by the site owner; nothing is bundled.
  * Version: 0.1.0
  * Requires at least: 6.2
  * Requires PHP: 8.1
@@ -26,6 +26,7 @@ require_once PCA_DIR . 'includes/ai.php';
 require_once PCA_DIR . 'includes/research.php';
 require_once PCA_DIR . 'includes/merchant.php';
 require_once PCA_DIR . 'includes/privacy.php';
+require_once PCA_DIR . 'includes/growth.php';
 require_once PCA_DIR . 'includes/rest.php';
 require_once PCA_DIR . 'includes/bootstrap.php';
 
