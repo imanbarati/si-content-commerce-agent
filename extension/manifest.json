@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "AI Content & Commerce Agent",
+  "version": "0.1.0",
+  "description": "White-label content, merchant research, price suggestions and privacy hygiene in your browser. No credentials are bundled.",
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_popup": "popup.html", "default_title": "AI Content & Commerce Agent" },
+  "options_page": "options.html",
+  "permissions": ["storage", "alarms"],
+  "optional_host_permissions": ["<all_urls>"],
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'self'" }
+}

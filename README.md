@@ -75,6 +75,8 @@ uses the shared token:
 - **Worker edition** — `worker/`, the same agent logic as a small Node/Cloudflare
   worker with JSON-file state. No WordPress install needed, so it fits on a
   machine with very little free space.
+- **Chrome extension edition** — `extension/`, a Manifest V3 extension with the
+  same core helpers, browser-local settings and per-origin permission requests.
 
 Run the worker edition locally:
 
