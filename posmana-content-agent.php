@@ -27,6 +27,7 @@ require_once PCA_DIR . 'includes/research.php';
 require_once PCA_DIR . 'includes/merchant.php';
 require_once PCA_DIR . 'includes/privacy.php';
 require_once PCA_DIR . 'includes/growth.php';
+require_once PCA_DIR . 'includes/legal.php';
 require_once PCA_DIR . 'includes/rest.php';
 require_once PCA_DIR . 'includes/bootstrap.php';
 

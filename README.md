@@ -118,3 +118,11 @@ the repository.
   Zendrop and Printify with `sponsored nofollow` and UTM parameters.
 - Campaign conduct checklist. Bot swarms, fake traffic, click fraud and ad
   manipulation are explicitly out of scope — see `docs/CAMPAIGN-CONDUCT.md`.
+
+## Legal growth automation
+
+`docs/LEGAL-GROWTH.md` defines the boundary: audit-only crawls of domains you
+own, `robots.txt` respected, sequential rate-limited requests, no writes, no
+fake traffic and no ad manipulation. Worker endpoint:
+`POST /api/legal/audit` with `OWNED_DOMAINS` configured. WordPress endpoint:
+`POST /wp-json/posmana-agent/v1/legal/audit` with owned domains in settings.

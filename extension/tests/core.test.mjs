@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   choosePrice, cleanInvisible, extractPrices, factCheck, faDigits, mcpPayloadText,
-  affiliateLink, campaignChecklist, keywordVariants, merchantTokenValid, parseFeed, parseProducts, planQueries, rankResults, seoChecklist,
+  affiliateLink, auditHtml, campaignChecklist, keywordVariants, merchantTokenValid, parseFeed, parseProducts, planQueries, rankResults, robotsAllows, seoChecklist,
 } from '../core.js'
 
 const FEED = `<?xml version="1.0"?><rss><channel>
@@ -43,4 +43,9 @@ test('growth helpers', () => {
   assert.equal(keywordVariants('mini').length, 8)
   assert.ok(affiliateLink('shopify', 'https://x.example/p', 't').includes('utm_medium=affiliate'))
   assert.ok(campaignChecklist().some((i) => i.label.includes('No bot swarms')))
+})
+
+test('legal audit helpers', () => {
+  assert.equal(robotsAllows('User-agent: *\nDisallow: /private', 'https://x.example/private/a'), false)
+  assert.ok(auditHtml('<title>Long enough title</title><h1>Hi</h1>', 'https://x.example/').checks.some((i) => i.ok))
 })

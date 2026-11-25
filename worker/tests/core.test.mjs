@@ -6,6 +6,7 @@ import {
 } from '../src/core.mjs'
 import { cleanInvisible } from '../src/privacy.mjs'
 import { affiliateLink, campaignChecklist, keywordVariants, schemaProduct } from '../src/growth.mjs'
+import { auditHtml, robotsAllows } from '../src/legal.mjs'
 
 const FEED = `<?xml version="1.0"?><rss><channel>
 <item><title>Test &amp; Item</title><link>https://example.com/1</link><guid>abc-1</guid><description><![CDATA[<p>Hello</p>]]></description></item>
@@ -61,4 +62,15 @@ test('affiliate links carry consent-friendly UTMs', () => {
 })
 test('campaign checklist refuses swarm behaviour', () => {
   assert.ok(campaignChecklist().some((item) => item.label.includes('No bot swarms')))
+})
+
+test('robots.txt compliance', () => {
+  const robots = 'User-agent: *\nDisallow: /private\nAllow: /private/public'
+  assert.equal(robotsAllows(robots, 'https://x.example/private/a'), false)
+  assert.equal(robotsAllows(robots, 'https://x.example/private/public'), true)
+  assert.equal(robotsAllows(robots, 'https://x.example/'), true)
+})
+test('SEO audit checks', () => {
+  const html = '<html><head><title>A good title</title><meta name="description" content="This is a long enough description"><link rel="canonical" href="https://x.example/"><script type="application/ld+json">{}</script></head><body><h1>Hello</h1></body></html>'
+  assert.ok(auditHtml(html, 'https://x.example/').checks.every((item) => item.ok))
 })

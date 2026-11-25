@@ -40,6 +40,7 @@ function pca_handle_settings_save() {
 		if ( count( $parts ) === 2 && '' !== $parts[0] ) { $tags[ sanitize_key( $parts[0] ) ] = sanitize_text_field( $parts[1] ); }
 	}
 	$settings['affiliate_tags'] = $tags;
+	$settings['owned_domains']  = array_values( array_filter( array_map( 'esc_url_raw', preg_split( '/\r?\n/', $post['owned_domains'] ?? '' ) ) ) );
 	$settings['brand_name']       = sanitize_text_field( $post['brand_name'] ?? $settings['brand_name'] );
 	$settings['ai_enabled']       = ! empty( $post['ai_enabled'] );
 	$settings['ai_endpoint']      = esc_url_raw( $post['ai_endpoint'] ?? '' );
@@ -174,6 +175,7 @@ function pca_admin_page() {
 			<h2>Growth, schema and affiliate</h2>
 			<p><label><input type="checkbox" name="schema_enabled" value="1" <?php checked( $settings['schema_enabled'] ); ?>> Output Product/Article JSON-LD alongside Yoast SEO</label></p>
 			<p><label>Affiliate tags (platform|tag, one per line: shopify, woocommerce, aliexpress, cj, spocket, zendrop, printify)<br><textarea name="affiliate_tags" rows="3" class="large-text code"><?php echo esc_textarea( pca_tags_to_text( $settings['affiliate_tags'] ) ); ?></textarea></label></p>
+			<p><label>Owned domains to audit (one per line)<br><textarea name="owned_domains" rows="3" class="large-text code"><?php echo esc_textarea( implode( "\n", (array) $settings['owned_domains'] ) ); ?></textarea></label></p>
 
 			<h2>SEO and schedule</h2>
 			<p><label><input type="checkbox" name="seo_enabled" value="1" <?php checked( $settings['seo_enabled'] ); ?>> Write Yoast meta fields on imported posts</label></p>

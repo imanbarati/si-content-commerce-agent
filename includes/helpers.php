@@ -21,6 +21,7 @@ function pca_defaults() {
 		'seo_enabled'        => true,
 		'schema_enabled'     => true,
 		'affiliate_tags'     => array(),
+		'owned_domains'      => array(),
 		'brand_name'         => 'SI Content & Commerce Agent',
 		'ai_enabled'         => false,
 		'ai_endpoint'        => '',

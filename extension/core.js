@@ -190,3 +190,33 @@ export function campaignChecklist() {
     { label: 'Affiliate links are disclosed', ok: true },
   ]
 }
+
+export function robotsAllows(robots, url, agent = 'SI-Agent') {
+  try {
+    const path = new URL(url).pathname || '/'
+    let active = false, matched = false
+    for (const raw of String(robots || '').split(/\r?\n/)) {
+      const line = raw.replace(/#.*$/, '').trim()
+      if (!line) continue
+      const [key, ...rest] = line.split(':')
+      const value = rest.join(':').trim()
+      const directive = key.trim().toLowerCase()
+      if (directive === 'user-agent') { active = value === '*' || agent.toLowerCase().includes(value.toLowerCase()); continue }
+      if (!active) continue
+      if (directive === 'disallow' && value && path.startsWith(value)) matched = true
+      if (directive === 'allow' && value && path.startsWith(value)) matched = false
+    }
+    return !matched
+  } catch { return false }
+}
+
+export function auditHtml(html, url) {
+  const text = String(html || '')
+  return { url, checks: [
+    { label: 'title', ok: /<title[^>]*>[^<]{5,}<\/title>/i.test(text) },
+    { label: 'meta description', ok: /<meta[^>]+name=["']description["'][^>]+content=["'][^"']{20,}/i.test(text) },
+    { label: 'canonical', ok: /rel=["']canonical["']/i.test(text) },
+    { label: 'json-ld', ok: text.toLowerCase().includes('application/ld+json') },
+    { label: 'h1', ok: /<h1[\s>]/i.test(text) },
+  ] }
+}

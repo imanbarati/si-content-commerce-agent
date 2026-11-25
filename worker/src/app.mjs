@@ -1,6 +1,7 @@
 import { configFrom } from './config.mjs'
 import { cleanInvisible } from './privacy.mjs'
 import { affiliateLink, campaignChecklist, keywordVariants } from './growth.mjs'
+import { legalAudit } from './legal.mjs'
 import {
   choosePrice, extractPrices, factCheck, faDigits, merchantTokenValid,
   parseFeed, planQueries, rankResults, stripHtml,
@@ -182,6 +183,12 @@ export function createHandler(store, env = {}) {
       return link ? json({ ok: true, url: link }) : fail('Invalid platform or URL', 400)
     }
     if (path === '/api/growth/campaign') return json({ ok: true, checklist: campaignChecklist() })
+    if (path === '/api/legal/audit' && method === 'POST') {
+      const domains = String(env.OWNED_DOMAINS || '').split(/[\n,]/).map((item) => item.trim()).filter(Boolean)
+      if (!domains.length) return fail('Configure OWNED_DOMAINS first', 403)
+      return json({ ok: true, results: await legalAudit({ domains }) })
+    }
+
     if (path === '/api/privacy/clean' && method === 'POST') {
       let body
       try { body = await request.json() } catch { return fail('Invalid JSON', 400) }
