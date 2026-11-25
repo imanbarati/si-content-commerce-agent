@@ -1,0 +1,29 @@
+name: Validate
+on: [push, pull_request]
+
+jobs:
+  worker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Worker tests
+        working-directory: worker
+        run: npm test
+      - name: Syntax checks
+        run: |
+          for f in $(find . -name '*.js' -o -name '*.mjs'); do node --check "$f"; done
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: PHP lint
+        run: |
+          find . -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Research helper tests
+        run: php tests/research-helpers.php

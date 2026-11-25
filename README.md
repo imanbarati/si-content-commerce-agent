@@ -69,7 +69,33 @@ uses the shared token:
 - `POST /wp-json/posmana-agent/v1/mcp-test`
 - `POST /wp-json/posmana-agent/v1/merchant/inbound`
 
-## Install
+## Two editions
+
+- **WordPress edition** — this plugin, installed in `wp-content/plugins/`.
+- **Worker edition** — `worker/`, the same agent logic as a small Node/Cloudflare
+  worker with JSON-file state. No WordPress install needed, so it fits on a
+  machine with very little free space.
+
+Run the worker edition locally:
+
+```bash
+cd worker
+npm test
+npm run dev            # http://127.0.0.1:8786/api/health
+```
+
+Deploy to Cloudflare free tier:
+
+```bash
+cd worker
+npx wrangler deploy    # uses wrangler.toml, no database required
+```
+
+Worker state lives in memory on Cloudflare and in `worker/data/worker.json`
+locally. Configure behaviour with environment variables documented in
+`worker/README.md`.
+
+## Install (WordPress edition)
 
 Upload the folder to `wp-content/plugins/` and activate. Optional: install
 Yoast SEO. Configure settings under **Tools → AI Content & Commerce Agent**.
@@ -77,6 +103,7 @@ Yoast SEO. Configure settings under **Tools → AI Content & Commerce Agent**.
 ## Verification
 
 All PHP files pass `php -l` (portable PHP 8.3.37); JS files pass `node --check`;
-the mock MCP bridge returned the expected JSON-RPC payload. No live Google, X,
+the Worker edition passes 13 `node:test` tests and its HTTP API was smoke-tested
+with real requests; the mock MCP bridge returned the expected JSON-RPC payload. No live Google, X,
 Digikala or Torob requests were made during development. No credentials are in
 the repository.
