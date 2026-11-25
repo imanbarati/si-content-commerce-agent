@@ -33,6 +33,15 @@ Here is what those systems generally evaluate, and the legitimate response.
 8. Monitor Search Console for manual actions and fix the cause rather than
    disguising it.
 
+## Watermarks and provenance
+
+This plugin does not add watermarks or hidden markers to content, and it does
+not remove them either. It never strips C2PA/SynthID metadata, EXIF provenance,
+or any other origin signal from media or text, and it does not rewrite AI-assisted
+text to disguise where it came from. If a third-party tool adds a visible
+watermark, use that tool's licensed options rather than trying to erase it.
+Where AI assistance is material, disclose it and keep a human editor in the loop.
+
 ## How this plugin supports that
 
 - Imports and research output are drafts by default.
