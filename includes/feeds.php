@@ -50,6 +50,7 @@ function pca_create_post_from_item( $item, $source ) {
 	update_post_meta( $post_id, '_pca_guid', $guid );
 	update_post_meta( $post_id, '_pca_source', sanitize_key( $source ) );
 	update_post_meta( $post_id, '_pca_source_url', esc_url_raw( $item['url'] ) );
+	pca_ai_enrich_post( $post_id, $item['title'], $item['description'] );
 	if ( pca_apply_seo( $post_id, $item['title'], wp_strip_all_tags( $item['description'] ) ) ) {
 		pca_log( 'Imported ' . $item['title'] . ' with Yoast metadata.' );
 	} else {

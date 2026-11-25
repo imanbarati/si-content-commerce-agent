@@ -33,6 +33,19 @@ function pca_handle_settings_save() {
 	$settings['undercut']         = absint( $post['undercut'] ?? 1000 );
 	$settings['min_margin']       = absint( $post['min_margin'] ?? 5 );
 	$settings['seo_enabled']      = ! empty( $post['seo_enabled'] );
+	$settings['brand_name']       = sanitize_text_field( $post['brand_name'] ?? $settings['brand_name'] );
+	$settings['ai_enabled']       = ! empty( $post['ai_enabled'] );
+	$settings['ai_endpoint']      = esc_url_raw( $post['ai_endpoint'] ?? '' );
+	$settings['ai_key']           = isset( $post['ai_key'] ) ? sanitize_text_field( $post['ai_key'] ) : $settings['ai_key'];
+	$settings['ai_model']         = sanitize_text_field( $post['ai_model'] ?? 'gpt-4o-mini' );
+	$settings['research_provider']= in_array( $post['research_provider'] ?? 'google_news', array( 'google_news', 'google_cse', 'deepseek', 'mcp' ), true ) ? $post['research_provider'] : 'google_news';
+	$settings['google_cse_key']   = isset( $post['google_cse_key'] ) ? sanitize_text_field( $post['google_cse_key'] ) : $settings['google_cse_key'];
+	$settings['google_cse_cx']    = isset( $post['google_cse_cx'] ) ? sanitize_text_field( $post['google_cse_cx'] ) : $settings['google_cse_cx'];
+	$settings['deepseek_endpoint']= esc_url_raw( $post['deepseek_endpoint'] ?? $settings['deepseek_endpoint'] );
+	$settings['deepseek_key']     = isset( $post['deepseek_key'] ) ? sanitize_text_field( $post['deepseek_key'] ) : $settings['deepseek_key'];
+	$settings['merchant_mode']    = in_array( $post['merchant_mode'] ?? 'off', array( 'off', 'from', 'to', 'both' ), true ) ? $post['merchant_mode'] : 'off';
+	$settings['merchant_to_url']  = esc_url_raw( $post['merchant_to_url'] ?? '' );
+	$settings['merchant_token']   = isset( $post['merchant_token'] ) ? sanitize_text_field( $post['merchant_token'] ) : $settings['merchant_token'];
 	$settings['interval']         = in_array( $post['interval'] ?? 'hourly', array( 'hourly', 'twicedaily', 'daily' ), true ) ? $post['interval'] : 'hourly';
 
 	$products = array();
@@ -60,6 +73,9 @@ function pca_admin_page() {
 		'yoast'    => pca_yoast_active() ? 'active' : 'not installed',
 		'feeds'    => count( (array) $settings['feeds'] ),
 		'x'        => count( (array) $settings['x_handles'] ),
+		'ai'        => empty( $settings['ai_endpoint'] ) ? 'not configured' : 'configured',
+		'research'  => sanitize_key( $settings['research_provider'] ),
+		'merchant'  => sanitize_key( $settings['merchant_mode'] ),
 		'digikala' => empty( $settings['mcp_digikala_url'] ) ? 'not configured' : 'configured',
 		'torob'    => empty( $settings['mcp_torob_url'] ) ? 'not configured' : 'configured',
 	);
@@ -74,6 +90,9 @@ function pca_admin_page() {
 			<div class="pca-card"><b><?php echo esc_html( $status['yoast'] ); ?></b><span>Yoast SEO</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['feeds'] ); ?></b><span>RSS feeds</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['x'] ); ?></b><span>X handles</span></div>
+			<div class="pca-card"><b><?php echo esc_html( $status['ai'] ); ?></b><span>AI enrichment</span></div>
+			<div class="pca-card"><b><?php echo esc_html( $status['research'] ); ?></b><span>Research source</span></div>
+			<div class="pca-card"><b><?php echo esc_html( $status['merchant'] ); ?></b><span>Merchant bridge</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['digikala'] ); ?></b><span>Digikala MCP</span></div>
 			<div class="pca-card"><b><?php echo esc_html( $status['torob'] ); ?></b><span>Torob MCP</span></div>
 		</div>
@@ -114,6 +133,37 @@ function pca_admin_page() {
 			<label>Minimum margin % <input type="number" name="min_margin" value="<?php echo absint( $settings['min_margin'] ); ?>"></label></p>
 			<p><label>Products (sku|name|query|cost, one per line)<br><textarea name="products" rows="5" class="large-text code"><?php echo esc_textarea( pca_products_to_text( $settings['products'] ) ); ?></textarea></label></p>
 
+			<h2>White label and AI</h2>
+			<p><label>Brand name shown to editors<br><input type="text" name="brand_name" class="regular-text" value="<?php echo esc_attr( $settings['brand_name'] ); ?>"></label></p>
+			<p><label><input type="checkbox" name="ai_enabled" value="1" <?php checked( $settings['ai_enabled'] ); ?>> AI-enrich imported posts</label></p>
+			<p><label>OpenAI-compatible chat endpoint<br><input type="url" name="ai_endpoint" class="regular-text" value="<?php echo esc_attr( $settings['ai_endpoint'] ); ?>" placeholder="https://provider.example/v1/chat/completions"></label></p>
+			<p><label>AI key (leave blank to keep existing)<br><input type="password" name="ai_key" class="regular-text" autocomplete="off" placeholder="<?php echo $settings['ai_key'] ? 'configured' : 'not configured'; ?>"></label></p>
+			<p><label>Model <input type="text" name="ai_model" value="<?php echo esc_attr( $settings['ai_model'] ); ?>"></label></p>
+
+			<h2>Research and merchant bridge</h2>
+			<p><label>Research source
+				<select name="research_provider">
+					<option value="google_news" <?php selected( $settings['research_provider'], 'google_news' ); ?>>Google News RSS (no key)</option>
+					<option value="google_cse" <?php selected( $settings['research_provider'], 'google_cse' ); ?>>Google Custom Search API (your key)</option>
+					<option value="deepseek" <?php selected( $settings['research_provider'], 'deepseek' ); ?>>DeepSeek Search (your key)</option>
+					<option value="mcp" <?php selected( $settings['research_provider'], 'mcp' ); ?>>Configured MCP endpoint</option>
+				</select>
+			</label></p>
+			<p><label>Google CSE key <input type="text" name="google_cse_key" class="regular-text" value="<?php echo esc_attr( $settings['google_cse_key'] ); ?>"></label>
+			<label>CX <input type="text" name="google_cse_cx" value="<?php echo esc_attr( $settings['google_cse_cx'] ); ?>"></label></p>
+			<p><label>DeepSeek endpoint <input type="url" name="deepseek_endpoint" class="regular-text" value="<?php echo esc_attr( $settings['deepseek_endpoint'] ); ?>"></label>
+			<label>DeepSeek key <input type="password" name="deepseek_key" class="regular-text" autocomplete="off" placeholder="<?php echo $settings['deepseek_key'] ? 'configured' : 'not configured'; ?>"></label></p>
+			<p><label>Merchant mode
+				<select name="merchant_mode">
+					<option value="off" <?php selected( $settings['merchant_mode'], 'off' ); ?>>Off</option>
+					<option value="from" <?php selected( $settings['merchant_mode'], 'from' ); ?>>From merchants (inbound)</option>
+					<option value="to" <?php selected( $settings['merchant_mode'], 'to' ); ?>>To merchants (outbound)</option>
+					<option value="both" <?php selected( $settings['merchant_mode'], 'both' ); ?>>Both</option>
+				</select>
+			</label></p>
+			<p><label>Outbound URL <input type="url" name="merchant_to_url" class="regular-text" value="<?php echo esc_attr( $settings['merchant_to_url'] ); ?>"></label>
+			<label>Shared token <input type="password" name="merchant_token" class="regular-text" autocomplete="off" placeholder="<?php echo $settings['merchant_token'] ? 'configured' : 'not configured'; ?>"></label></p>
+
 			<h2>SEO and schedule</h2>
 			<p><label><input type="checkbox" name="seo_enabled" value="1" <?php checked( $settings['seo_enabled'] ); ?>> Write Yoast meta fields on imported posts</label></p>
 			<p><label>Sync interval
@@ -130,6 +180,8 @@ function pca_admin_page() {
 		<p>
 			<button class="button pca-sync" data-action="feeds">Sync feeds now</button>
 			<button class="button pca-sync" data-action="prices">Sync prices now</button>
+			<input type="text" id="pca-research-sku" placeholder="product SKU" size="18">
+			<button class="button" type="button" id="pca-research">Research merchant</button>
 			<span id="pca-sync-status" aria-live="polite"></span>
 		</p>
 

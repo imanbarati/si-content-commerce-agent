@@ -100,6 +100,7 @@ function pca_sync_prices() {
 	}
 
 	update_option( 'pca_price_suggestions', $suggestions, false );
+	pca_merchant_send( array( 'type' => 'price_suggestions', 'data' => $suggestions ) );
 	pca_mark_run( 'prices' );
 	pca_log( 'Price sync finished: ' . count( $suggestions ) . ' suggestion(s), ' . $applied . ' applied.' );
 	return $applied;

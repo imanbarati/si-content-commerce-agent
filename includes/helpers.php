@@ -19,6 +19,19 @@ function pca_defaults() {
 		'min_margin'         => 5,
 		'products'           => array(),
 		'seo_enabled'        => true,
+		'brand_name'         => 'AI Content & Commerce Agent',
+		'ai_enabled'         => false,
+		'ai_endpoint'        => '',
+		'ai_key'             => '',
+		'ai_model'           => 'gpt-4o-mini',
+		'research_provider'  => 'google_news',
+		'google_cse_key'     => '',
+		'google_cse_cx'      => '',
+		'deepseek_endpoint'  => 'https://api.deepseek.com/v1/search',
+		'deepseek_key'       => '',
+		'merchant_mode'      => 'off',
+		'merchant_to_url'    => '',
+		'merchant_token'     => '',
 		'interval'           => 'hourly',
 	);
 }
@@ -60,4 +73,12 @@ function pca_mark_run( $key ) {
 function pca_money( $value ) {
 	$number = (float) $value;
 	return number_format( $number, 0, '.', ',' ) . ' تومان';
+}
+
+function pca_brand() {
+	return apply_filters( 'pca_brand', pca_settings()['brand_name'] );
+}
+
+function pca_mask( $value ) {
+	return $value ? 'configured' : 'not configured';
 }

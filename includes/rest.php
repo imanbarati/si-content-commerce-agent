@@ -38,6 +38,16 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 
+	register_rest_route( 'posmana-agent/v1', '/research/(?P<sku>[a-z0-9-]+)', array(
+		'methods'             => 'POST',
+		'permission_callback' => function () { return current_user_can( 'manage_options' ); },
+		'callback'            => function ( $request ) {
+			$report = pca_research_run( sanitize_key( $request['sku'] ) );
+			if ( is_wp_error( $report ) ) { return $report; }
+			return $report;
+		},
+	) );
+
 	register_rest_route( 'posmana-agent/v1', '/mcp-test', array(
 		'methods'             => 'POST',
 		'permission_callback' => function () { return current_user_can( 'manage_options' ); },

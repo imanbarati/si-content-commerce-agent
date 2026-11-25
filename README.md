@@ -1,128 +1,82 @@
-# Posmana Content Agent — WordPress plugin
+# AI Content & Commerce Agent (white-label WordPress plugin)
 
-A single WordPress plugin that:
+A neutral-branded WordPress plugin that imports content, enriches it with AI,
+researches merchant prices with a BetterSearch-style pipeline, suggests prices,
+and writes Yoast SEO metadata. All external endpoints, model keys and tokens are
+configured by the site owner. Nothing is bundled and no branding is hard-coded
+in the UI — the brand name is filterable.
 
-1. imports RSS feeds and X.com items into posts;
-2. asks configurable MCP endpoints for competitor prices and suggests (or applies) prices;
-3. writes Yoast SEO focus keyphrase and meta description on imported posts;
-4. exposes a small REST API and an admin page under **Tools → Posmana Agent**.
+## White labelling
 
-No credentials, API keys, tokens or scraped data are bundled. Nothing is sent
-anywhere except the endpoints you configure yourself.
+- Plugin name, admin title and descriptions are neutral.
+- Set **Brand name shown to editors** in the admin page, or use:
+  `add_filter( 'pca_brand', fn() => 'Your Brand' );`
+- Internal option/function prefix `pca_` is kept for upgrade safety; it is not
+  visible to editors.
+- Repo name is neutral; no POS-specific wording remains in user-facing text.
 
-## Install
+## Features
 
-Copy this folder to `wp-content/plugins/posmana-content-agent` and activate it,
-or zip the contents (files at the zip root) and upload through wp-admin →
-Plugins → Add New.
+### Content import
+- RSS feeds via WordPress SimplePie; deduplication through `_pca_guid`.
+- X.com posts via your own bearer token or an RSS bridge template.
+- Posts default to **draft** for review.
+- AI enrichment (optional): rewrite title, summary, focus keyphrase and category
+  using any OpenAI-compatible chat endpoint you configure.
 
-Optional: install Yoast SEO. The plugin writes Yoast meta fields when it is
-active and still writes plain post meta when it is not.
+### Merchant research (BetterSearch-inspired)
+Pipeline: plan query variants → gather from a compliant source → dedupe/rank →
+fetch top sources → extract prices → fact-check each price against the fetched
+text → store a report with confidence labels.
 
-## Feed import
+Sources (all legitimate; no anti-bot bypass):
+- **Google News RSS** — public feed, no key.
+- **Google Custom Search JSON API** — your own key and CX, subject to your quota.
+- **DeepSeek Search API** — your own key and endpoint.
+- **Configured MCP endpoint** — your own bridge.
 
-- Add RSS URLs under **Feeds** in the admin page. Feeds are fetched with
-  WordPress's bundled SimplePie (`fetch_feed`).
-- Duplicate protection uses post meta `_pca_guid`, so reruns do not create
-  duplicate posts.
-- Posts are created as **draft** by default. Change this only after reviewing
-  quality and duplicate-content risk.
-- Imported posts include a `nofollow noopener` link to the original source.
-- Cron runs on your chosen interval; activation schedules it automatically.
+The plugin never scrapes `google.com/search`, rotates user agents to evade
+blocks, solves CAPTCHAs, or bypasses rate limits or account restrictions. See
+`docs/GOOGLE-COMPLIANCE.md`.
 
-### X.com
+### Pricing
+- Calls configured Digikala/Torob MCP-style endpoints with JSON-RPC `tools/call`.
+- Suggested price = `max(lowest verified price − undercut, cost × (1 + margin%))`.
+- Dry-run by default; auto-apply writes WooCommerce prices by SKU or a local
+  price table with `[pca_price sku="..."]`.
+- `bridges/mock-mcp.mjs` is a local test server, not a real merchant integration.
 
-Choose one:
+### Merchant bridge (from / to)
+- `from`: POST to `/wp-json/posmana-agent/v1/merchant/inbound` with
+  `X-Merchant-Token` to create a draft post from an external merchant.
+- `to`: price suggestions are POSTed to your configured outbound URL with the
+  same token header.
+- Modes: `off`, `from`, `to`, `both`. Off by default.
 
-- Supply your own X API bearer token under **Feeds**. The plugin calls
-  `/2/users/by/username/{handle}` and `/2/users/{id}/tweets`. API access may
-  require a paid X plan.
-- Or supply an RSS bridge URL template using `{handle}`, e.g.
-  `https://your-bridge.example/{handle}`. Bridge reliability and terms are your
-  responsibility.
-
-The plugin does not bypass authentication, create accounts, or scrape private
-data. Handles that cannot be read are logged as errors.
-
-## Pricing via MCP
-
-The bundled `bridges/mock-mcp.mjs` is only a local test server. Real Digikala and
-Torob MCP endpoints are **not** included: you must provide them (or write a
-small bridge that exposes their public data through the same JSON contract).
-The plugin does not scrape either site directly.
-
-Contract — POST JSON-RPC to the configured endpoint:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "uuid",
-  "method": "tools/call",
-  "params": {
-    "name": "search_product",
-    "arguments": { "query": "posmana mini" }
-  }
-}
-```
-
-Expected response:
-
-```json
-{
-  "jsonrpc": "2.0",
-  "id": "uuid",
-  "result": { "content": [{ "type": "text", "text": "{"price":12900000}" }] }
-}
-```
-
-Any numeric `price`, `min_price`, `lowest_price` or `final_price` key is
-accepted, including nested JSON.
-
-Price rules:
-
-- `new price = max(lowest competitor price - undercut, cost × (1 + margin%))`.
-- Results go to `pca_price_suggestions` and are shown in the admin table.
-- Auto-apply is **off by default**. When enabled, WooCommerce product prices are
-  updated by SKU if WooCommerce is active; otherwise a local `pca_prices` option
-  is updated and exposed with `[pca_price sku="posmana-mini"]`.
-
-Test locally:
-
-```bash
-MOCK_PRICE=12900000 node bridges/mock-mcp.mjs
-# set the Digikala MCP endpoint to http://127.0.0.1:8789/ in the plugin
-```
-
-## Yoast SEO
-
-On import the plugin writes:
-
-- `_yoast_wpseo_focuskw` — focus keyphrase from the item title;
-- `_yoast_wpseo_metadesc` — trimmed item description;
-- `_pca_seo_focus` — plain copy for audit.
-
-The admin page shows a checklist (Yoast active, drafts by default, canonical
-source links, dry-run pricing). It does not modify Yoast's code or settings.
+### SEO
+- Writes `_yoast_wpseo_focuskw`, `_yoast_wpseo_metadesc` on imported/enriched posts.
+- Admin checklist covers Yoast status, drafts, canonical source links and dry-run pricing.
 
 ## REST API
 
-All routes require `manage_options` and a REST nonce:
+Routes require `manage_options` and a REST nonce, except merchant inbound which
+uses the shared token:
 
 - `GET  /wp-json/posmana-agent/v1/status`
 - `POST /wp-json/posmana-agent/v1/sync/feeds`
 - `POST /wp-json/posmana-agent/v1/sync/prices`
-- `POST /wp-json/posmana-agent/v1/mcp-test` with `endpoint`, `tool`, `query`
+- `POST /wp-json/posmana-agent/v1/research/<sku>`
+- `POST /wp-json/posmana-agent/v1/mcp-test`
+- `POST /wp-json/posmana-agent/v1/merchant/inbound`
 
-## Security and limits
+## Install
 
-- Capability checks, nonces, sanitisation and escaped output throughout.
-- URL validation allows only http/https with a host.
-- Secrets are stored only in your WordPress options table, never in this repo.
-- Price suggestions are not financial advice; review before applying.
-- No promise of avoiding bans or blocks on X, Digikala, Torob or any site.
+Upload the folder to `wp-content/plugins/` and activate. Optional: install
+Yoast SEO. Configure settings under **Tools → AI Content & Commerce Agent**.
 
-## Verification performed
+## Verification
 
-All PHP files pass `php -l` with portable PHP 8.3.37; both JS files pass
-`node --check`. The JSON-RPC contract was exercised against the bundled mock
-bridge shape. No live X/Digikala/Torob requests were made during development.
+All PHP files pass `php -l` (portable PHP 8.3.37); JS files pass `node --check`;
+the mock MCP bridge returned the expected JSON-RPC payload. No live Google, X,
+Digikala or Torob requests were made during development. No credentials are in
+the repository.
