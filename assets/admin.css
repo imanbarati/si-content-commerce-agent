@@ -1,14 +1,262 @@
-.pca-wrap { max-width: 1100px; }
-.pca-lede { color: #50575e; }
-.pca-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 12px; margin: 20px 0; }
-.pca-card { border: 1px solid #dcdcde; border-radius: 10px; padding: 16px; background: #fff; }
-.pca-card b { display: block; font-size: 1.1rem; }
-.pca-card span { color: #646970; font-size: 12px; }
-.pca-checklist { list-style: none; margin: 12px 0 24px; padding: 0; }
-.pca-checklist li { padding: 8px 12px; margin-block-end: 6px; border-inline-start: 4px solid #2f6b5e; background: #f6f7f7; }
-.pca-checklist li.warn { border-inline-start-color: #dba617; }
-.pca-form { background: #fff; border: 1px solid #dcdcde; border-radius: 10px; padding: 18px 22px; }
-.pca-form h2 { margin-top: 24px; }
-.pca-form label { display: inline-block; margin-block-end: 10px; }
-.pca-log { max-height: 300px; overflow: auto; background: #fff; padding: 14px 30px; border: 1px solid #dcdcde; }
-.pca-sync { margin-inline-end: 8px; }
+/*
+ * SI Content & Commerce Agent — Admin Styles
+ */
+
+.pca-wrap {
+  max-width: 960px;
+}
+
+.pca-lede {
+  color: #646970;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.pca-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.pca-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-left: 4px solid #0073aa;
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+  transition: box-shadow 0.2s;
+}
+
+.pca-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.pca-card b {
+  display: block;
+  font-size: 28px;
+  font-weight: 600;
+  color: #1d2327;
+  line-height: 1.2;
+}
+
+.pca-card span {
+  font-size: 12px;
+  color: #646970;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pca-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+}
+
+.pca-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pca-checklist li.ok {
+  border-left: 3px solid #28a745;
+}
+
+.pca-checklist li.warn {
+  border-left: 3px solid #ffb900;
+}
+
+.pca-checklist b {
+  color: #1d2327;
+  min-width: 200px;
+}
+
+.pca-form {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.pca-form h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d2327;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+  margin-top: 24px;
+}
+
+.pca-form h2:first-child {
+  margin-top: 0;
+}
+
+.pca-form p {
+  margin: 16px 0;
+}
+
+.pca-form label {
+  display: block;
+  font-weight: 500;
+  color: #1d2327;
+  margin-bottom: 6px;
+}
+
+.pca-form input[type="text"],
+.pca-form input[type="url"],
+.pca-form input[type="password"],
+.pca-form input[type="number"],
+.pca-form select,
+.pca-form textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+.pca-form input[type="text"]:focus,
+.pca-form input[type="url"]:focus,
+.pca-form input[type="password"]:focus,
+.pca-form input[type="number"]:focus,
+.pca-form select:focus,
+.pca-form textarea:focus {
+  border-color: #0073aa;
+  box-shadow: 0 0 0 1px #0073aa;
+  outline: none;
+}
+
+.pca-form .code {
+  font-family: Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.pca-form .submit {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.pca-form .button {
+  margin-right: 12px;
+}
+
+#pca-quick-status {
+  margin-left: 12px;
+  font-size: 13px;
+  color: #646970;
+}
+
+.pca-sync {
+  margin-right: 8px;
+}
+
+#pca-sync-status {
+  margin-left: 12px;
+  font-size: 13px;
+  color: #646970;
+  min-width: 200px;
+  display: inline-block;
+}
+
+.pca-log {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow: auto;
+}
+
+.pca-log li {
+  padding: 10px 16px;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+  font-family: Menlo, Consolas, monospace;
+}
+
+.pca-log li:last-child {
+  border-bottom: none;
+}
+
+.pca-log code {
+  color: #646970;
+  margin-right: 10px;
+}
+
+.widefat th,
+.widefat td {
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.widefat th {
+  background: #f6f7f7;
+  font-weight: 600;
+}
+
+#pca-result-panel {
+  background: #f6f7f7;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 16px;
+  margin-top: 16px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+#pca-result-panel h4 {
+  margin-top: 0;
+  font-size: 14px;
+}
+
+#pca-result-panel pre {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.notice {
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 4px;
+  border-left: 4px solid;
+}
+
+.notice-success {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.notice-error {
+  background: #f8d7da;
+  border-color: #dc3232;
+  color: #721c24;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+  .pca-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pca-form {
+    padding: 16px;
+  }
+}
