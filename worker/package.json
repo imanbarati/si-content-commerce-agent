@@ -11,9 +11,14 @@
     "deploy": "wrangler deploy",
     "test:ci": "node --test tests/*.test.mjs",
     "test:integration": "node --test tests/integration.test.mjs",
-    "test:all": "npm run test && npm run test:integration"
+    "test:all": "npm run test && npm run test:integration",
+    "test:coverage": "c8 --reporter=text --reporter=lcov --reporter=html node --test tests/*.test.mjs tests/integration.test.mjs",
+    "test:coverage:ci": "c8 --reporter=text --reporter=lcov --check-coverage --lines 79 --functions 85 --branches 59 --statements 79 node --test tests/*.test.mjs tests/integration.test.mjs"
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "c8": "^10.1.0"
   }
 }

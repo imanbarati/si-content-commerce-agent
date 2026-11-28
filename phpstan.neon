@@ -1,0 +1,14 @@
+includes:
+  - includes/**/*.php
+  - tests/**/*.php
+
+parameters:
+  level: 5
+  paths:
+    - includes
+    - tests
+  excludePaths:
+    - vendor
+    - node_modules
+  checkMissingIterableValueType: false
+  treatPhpDocTypesAsCertain: false

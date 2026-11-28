@@ -8,12 +8,17 @@
     "typecheck": "tsc --noEmit",
     "build": "node esbuild.config.mjs",
     "build:dev": "node esbuild.config.mjs --dev",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "test:coverage": "c8 --reporter=text --reporter=lcov --reporter=html node --test tests/*.test.mjs",
+    "test:coverage:ci": "c8 --reporter=text --reporter=lcov --check-coverage --lines 91 --functions 82 --branches 45 --statements 91 node --test tests/*.test.mjs"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
     "esbuild": "^0.23.0",
-    "typescript": "^5.5.0"
+    "typescript": "^5.5.0",
+    "c8": "^10.1.0"
   },
-  "engines": { "node": ">=20" }
+  "engines": {
+    "node": ">=20"
+  }
 }

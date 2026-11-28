@@ -11,7 +11,8 @@
     "test:extension": "cd extension && npm test",
     "test:php": "php tests/research-helpers.php",
     "parity": "node scripts/parity-check.mjs",
-    "test:integration": "cd worker && npm run test:integration"
+    "test:integration": "cd worker && npm run test:integration",
+    "phpstan": "phpstan analyse includes tests --level=5 --no-progress"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
@@ -22,7 +23,8 @@
     "@semantic-release/release-notes-generator": "^14.0.1",
     "husky": "^9.0.11",
     "lint-staged": "^17.6.3",
-    "semantic-release": "^24.0.0"
+    "semantic-release": "^24.0.0",
+    "phpstan": "^1.11.0"
   },
   "engines": {
     "node": ">=20"
