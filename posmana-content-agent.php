@@ -35,6 +35,7 @@ require_once PCA_DIR . 'includes/import-export.php';
 require_once PCA_DIR . 'includes/dashboard-widget.php';
 require_once PCA_DIR . 'includes/performance.php';
 require_once PCA_DIR . 'includes/multisite.php';
+require_once PCA_DIR . 'includes/api-v2.php';
 require_once PCA_DIR . 'includes/bootstrap.php';
 
 if ( is_admin() ) {
