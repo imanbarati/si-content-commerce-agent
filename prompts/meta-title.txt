@@ -1,0 +1,10 @@
+Write an SEO meta title for this content:
+
+Content: {content}
+Focus keyword: {focus_keyword}
+
+Requirements:
+- Max 60 characters
+- Include focus keyword near start
+- Persian or English based on content
+- Compelling, click-worthy

@@ -1,0 +1,11 @@
+Rewrite and optimize this content for better SEO and conversion:
+
+{content}
+
+Requirements:
+- Improve clarity, flow, persuasiveness
+- Add relevant keywords naturally
+- Fix any grammar/awkward phrasing
+- Keep same language (Persian/English)
+- Maintain factual accuracy
+- Return only the rewritten content

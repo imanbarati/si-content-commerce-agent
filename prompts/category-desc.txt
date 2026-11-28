@@ -1,0 +1,8 @@
+Write a category description for "{topic}".
+
+Related products: {product_name} ({product_query})
+Target audience: Iranian e-commerce shoppers
+Tone: Professional, trustworthy, informative
+Length: 150-250 words
+Persian language
+Include 3-4 relevant keywords naturally

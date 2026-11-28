@@ -1,0 +1,16 @@
+Write a comprehensive blog post based on this imported content:
+
+Title: {title}
+Source: {source_name} ({source_url})
+Description: {description}
+
+Research data: {research}
+
+Requirements:
+- Persian language
+- 800-1200 words
+- H2/H3 headings
+- Intro, body, conclusion
+- Include research findings naturally
+- SEO-optimized for the topic
+- No markdown, use plain text with clear paragraph breaks

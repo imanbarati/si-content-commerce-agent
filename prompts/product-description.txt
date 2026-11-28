@@ -1,0 +1,19 @@
+Write a compelling product description for "{product_name}" (SKU: {product_sku}).
+
+Product query: {product_query}
+Feed title: {feed_title}
+Feed description: {feed_desc}
+Source: {feed_source}
+
+Market research:
+- Price range: {price_min} - {price_max} IRR (avg: {price_avg} IRR)
+- Sources analyzed: {sources_count}
+- Top sources: {top_sources}
+
+Requirements:
+- Persian language (formal but accessible)
+- Include key features, benefits, use cases
+- Mention price positioning vs market
+- 200-300 words
+- No markdown, plain text
+- Include 2-3 Persian keywords naturally

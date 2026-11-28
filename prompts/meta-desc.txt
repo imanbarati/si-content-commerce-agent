@@ -1,0 +1,10 @@
+Write an SEO meta description for this content:
+
+Content: {content}
+Focus keyword: {focus_keyword}
+
+Requirements:
+- Max 155 characters
+- Include focus keyword
+- Persian or English based on content
+- Call to action, compelling

@@ -1,0 +1,13 @@
+Generate 5-7 frequently asked questions about "{topic}" for product "{product_name}" (query: {product_query}).
+
+Return ONLY valid JSON in this exact format:
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Question 1?", "acceptedAnswer": {"@type": "Answer", "text": "Answer 1"}},
+    {"@type": "Question", "name": "Question 2?", "acceptedAnswer": {"@type": "Answer", "text": "Answer 2"}}
+  ]
+}
+
+Questions should be in Persian, answers in Persian. Cover: pricing, features, availability, warranty, shipping.

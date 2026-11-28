@@ -1,0 +1,4 @@
+Write a concise product short description for "{product_name}" (SKU: {product_sku}).
+
+Focus: {product_query}
+Max 160 characters, Persian, punchy, benefit-driven.
