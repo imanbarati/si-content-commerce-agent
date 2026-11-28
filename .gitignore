@@ -5,5 +5,6 @@ node_modules/
 worker/data/
 worker/coverage/
 extension/coverage/
+extension/dist/
 coverage/
 *.tsbuildinfo
