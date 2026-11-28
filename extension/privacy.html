@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — SI Content & Commerce Agent</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 800px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #1d2327; }
+    h1 { color: #0073aa; border-bottom: 2px solid #0073aa; padding-bottom: 8px; }
+    h2 { color: #005177; margin-top: 32px; }
+    code { background: #f6f7f7; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+    .highlight { background: #fff3cd; padding: 16px; border-radius: 4px; border-left: 4px solid #ffb900; margin: 16px 0; }
+    ul { padding-left: 24px; }
+    li { margin: 8px 0; }
+    footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #ddd; color: #646970; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>Privacy Policy</h1>
+  <p><strong>Extension:</strong> SI Content & Commerce Agent<br>
+  <strong>Version:</strong> 0.1.0<br>
+  <strong>Last updated:</strong> 2026-11-28</p>
+
+  <div class="highlight">
+    <strong>Summary:</strong> This extension does not collect, transmit, or sell any personal data. All processing happens locally in your browser. You control all endpoints and credentials.
+  </div>
+
+  <h2>Data We Access</h2>
+  <ul>
+    <li><strong>Active tab content</strong> — only when you click "Audit this tab" (requires <code>activeTab</code> permission + user gesture). We read the DOM to extract title, meta description, canonical, H1, and JSON-LD for SEO auditing.</li>
+    <li><strong>Your settings</strong> — stored locally via <code>chrome.storage.local</code>. Includes RSS feeds, product SKUs, API endpoints, and keys you configure. Never sent anywhere unless you explicitly trigger a sync/research action.</li>
+    <li><strong>Host permissions</strong> — <code>optional_host_permissions: ["<all_urls>"]</code> is requested only when you add a new research source or merchant endpoint. You approve each origin via Chrome's permission prompt.</li>
+  </ul>
+
+  <h2>Data We Send</h2>
+  <ul>
+    <li>When you run <strong>Sync Feeds</strong>, the extension fetches RSS feeds you configured and sends the content to your configured AI endpoint (if enabled) for enrichment.</li>
+    <li>When you run <strong>Research</strong>, the extension queries Google News RSS, Google Custom Search, DeepSeek, or your MCP endpoint — all using <em>your</em> API keys.</li>
+    <li>When you run <strong>Price Sync</strong>, the extension calls your configured Digikala/Torob MCP endpoints.</li>
+    <li>When you run <strong>Campaign Analysis</strong>, the CSV is processed locally — no data leaves your browser.</li>
+  </ul>
+
+  <h2>Data We Never Touch</h2>
+  <ul>
+    <li>No analytics, telemetry, or usage tracking.</li>
+    <li>No account creation, no login, no user identification.</li>
+    <li>No cookies, no localStorage (only chrome.storage.local for your settings).</li>
+    <li>No third-party scripts, no external fonts, no CDN resources.</li>
+  </ul>
+
+  <h2>Your Control</h2>
+  <ul>
+    <li><strong>Export/Import settings</strong> — JSON file with all your config (except keys, which stay in storage).</li>
+    <li><strong>Clear all data</strong> — Extension options page has a "Clear storage" button.</li>
+    <li><strong>Revoke host permissions</strong> — Chrome's site settings let you remove any granted origin.</li>
+    <li><strong>Uninstall</strong> — Removes all local data automatically.</li>
+  </ul>
+
+  <h2>Permissions Rationale</h2>
+  <table style="width:100%; border-collapse:collapse; margin:16px 0;">
+    <thead><tr style="background:#f6f7f7;"><th style="padding:8px;text-align:left;border:1px solid #ddd;">Permission</th><th style="padding:8px;text-align:left;border:1px solid #ddd;">Why</th></tr></thead>
+    <tbody>
+      <tr><td style="padding:8px;border:1px solid #ddd;"><code>storage</code></td><td style="padding:8px;border:1px solid #ddd;">Save your feeds, products, endpoints, keys locally</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;"><code>alarms</code></td><td style="padding:8px;border:1px solid #ddd;">Periodic background sync (hourly by default)</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;"><code>activeTab</code></td><td style="padding:8px;border:1px solid #ddd;">Audit current tab on user click only</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;"><code>scripting</code></td><td style="padding:8px;border:1px solid #ddd;">Inject content script to read DOM for audit</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;"><code>optional_host_permissions: ["<all_urls>"]</code></td><td style="padding:8px;border:1px solid #ddd;">Your research/merchant endpoints (you approve each)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Compliance</h2>
+  <ul>
+    <li>GDPR: No personal data processed; you are the data controller for any content you import.</li>
+    <li>CCPA: No sale of personal information.</li>
+    <li>Chrome Web Store: Single-purpose (content/commerce agent), minimal permissions, no remote code.</li>
+  </ul>
+
+  <h2>Contact</h2>
+  <p>Questions? Open an issue at <a href="https://github.com/imanbarati/si-content-commerce-agent">GitHub</a>.</p>
+
+  <footer>
+    This policy applies only to the SI Content & Commerce Agent Chrome extension. The WordPress plugin and Worker editions have separate policies.
+  </footer>
+</body>
+</html>
