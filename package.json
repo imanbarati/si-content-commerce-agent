@@ -1,0 +1,28 @@
+{
+  "name": "si-content-commerce-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "White-label WordPress plugin + Worker + Chrome extension for content, merchant research and pricing",
+  "scripts": {
+    "prepare": "husky install",
+    "release": "semantic-release",
+    "test:all": "npm run test:worker && npm run test:extension && npm run test:php",
+    "test:worker": "cd worker && npm test",
+    "test:extension": "cd extension && npm test",
+    "test:php": "php tests/research-helpers.php"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.0",
+    "@semantic-release/npm": "^12.0.0",
+    "@semantic-release/release-notes-generator": "^14.0.1",
+    "husky": "^9.0.11",
+    "semantic-release": "^24.0.0"
+  },
+  "engines": { "node": ">=20" },
+  "release": {
+    "branches": ["main"]
+  }
+}
