@@ -33,6 +33,7 @@ require_once PCA_DIR . 'includes/woocommerce.php';
 require_once PCA_DIR . 'includes/merchant-center-api.php';
 require_once PCA_DIR . 'includes/import-export.php';
 require_once PCA_DIR . 'includes/dashboard-widget.php';
+require_once PCA_DIR . 'includes/performance.php';
 require_once PCA_DIR . 'includes/bootstrap.php';
 
 if ( is_admin() ) {
