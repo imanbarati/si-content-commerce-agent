@@ -3,3 +3,7 @@
 .vscode/
 node_modules/
 worker/data/
+worker/coverage/
+extension/coverage/
+coverage/
+*.tsbuildinfo
