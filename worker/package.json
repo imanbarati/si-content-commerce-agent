@@ -9,7 +9,9 @@
     "computer": "node computer.mjs",
     "dev": "node src/node-server.mjs",
     "deploy": "wrangler deploy",
-    "test:ci": "node --test tests/*.test.mjs"
+    "test:ci": "node --test tests/*.test.mjs",
+    "test:integration": "node --test tests/integration.test.mjs",
+    "test:all": "npm run test && npm run test:integration"
   },
   "engines": {
     "node": ">=20"
