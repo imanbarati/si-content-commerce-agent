@@ -1,6 +1,5 @@
 {
   "*.js": "node --check",
   "*.mjs": "node --check",
-  "*.php": "php -l",
   "*.json": "node -e \"JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))\""
 }

@@ -54,6 +54,15 @@ function pca_research_search( $query ) {
 		return $out;
 	}
 
+	if ( 'google_cse' === $provider ) {
+		if ( empty( $settings['cse_api_key'] ) || empty( $settings['cse_cx'] ) ) {
+			return new WP_Error( 'pca_cse_missing', 'Google Custom Search key and CX are required.' );
+		}
+		$items = pca_google_cse_search( $query, $settings );
+		if ( is_wp_error( $items ) ) { return $items; }
+		return $items;
+	}
+
 	if ( 'deepseek' === $provider ) {
 		if ( empty( $settings['deepseek_key'] ) ) { return new WP_Error( 'pca_ds_missing', 'DeepSeek search key is required.' ); }
 		$response = wp_remote_post( esc_url_raw( $settings['deepseek_endpoint'] ), array(
